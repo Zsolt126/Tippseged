@@ -3,69 +3,304 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TippSegéd Pro 3.0</title>
+    <title>TippSegéd Pro 4.0</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-        h1 { text-align: center; color: #2c3e50; margin-bottom: 5px; }
-        .version { text-align: center; font-size: 12px; color: #7f8c8d; margin-bottom: 20px; }
-        .tabs { display: flex; margin-bottom: 20px; border-bottom: 2px solid #eee; }
-        .tab { flex: 1; text-align: center; padding: 12px; cursor: pointer; font-weight: bold; color: #7f8c8d; }
-        .tab.active { color: #27ae60; border-bottom: 3px solid #27ae60; }
-        .section { display: none; }
-        .section.active { display: block; }
-        .input-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: 500; font-size: 14px; }
-        input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
-        button { width: 100%; padding: 12px; background-color: #27ae60; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
-        button:hover { background-color: #219653; }
-        .results { margin-top: 25px; padding: 15px; background: #f9f9f9; border-radius: 8px; border-left: 5px solid #27ae60; }
-        .result-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
-        .result-item:last-child { border-bottom: none; }
-        .stars { color: #f1c40f; font-size: 18px; }
-        .score-list { margin-top: 10px; padding-left: 20px; }
+        :root {
+            --primary: #2ecc71;
+            --primary-dark: #27ae60;
+            --bg: #f4f7f6;
+            --card-bg: #ffffff;
+            --text: #2c3e50;
+            --danger: #e74c3c;
+            --border: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            padding: 24px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 5px;
+            color: #1a252f;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 1em;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .results {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 2px solid var(--bg);
+            display: none;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .value-box {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 6px;
+            background: #f8f9fa;
+            border-left: 4px solid var(--primary);
+        }
+
+        .value-box.no-value {
+            border-left-color: var(--danger);
+        }
+
+        .badge {
+            font-weight: bold;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+        }
+
+        .badge-success { background: #d4edda; color: #155724; }
+        .badge-danger { background: #f8d7da; color: #721c24; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>TippSegéd Pro 3.0</h1>
-    <div class="version">Készítette: Zsolt & AI</div>
+    <h1>TippSegéd Pro 4.0</h1>
+    <div class="subtitle">Készítette: Zsolt & AI</div>
 
-    <div class="tabs">
-        <div class="tab active" onclick="switchTab('pre')">Meccs előtti</div>
-        <div class="tab" onclick="switchTab('live')">Élő (Live) elemző</div>
+    <div class="form-group">
+        <label for="hazaiLott">Hazai csapat lőtt gólátlaga (hazai pályán):</label>
+        <input type="number" id="hazaiLott" step="0.1" placeholder="pl. 1.8">
     </div>
 
-    <div id="pre-mode" class="section active">
-        <div class="input-group"><label>Hazai lőtt gólátlag:</label><input type="number" id="home_att" step="0.1" value="1.8"></div>
-        <div class="input-group"><label>Hazai kapott gólátlag:</label><input type="number" id="home_def" step="0.1" value="1.0"></div>
-        <div class="input-group"><label>Vendég lőtt gólátlag:</label><input type="number" id="away_att" step="0.1" value="1.2"></div>
-        <div class="input-group"><label>Vendég kapott gólátlag:</label><input type="number" id="away_def" step="0.1" value="1.5"></div>
-        <div class="input-group"><label>Fogadóiroda Over 2.5 odds (opcionális):</label><input type="number" id="bookie_odds" step="0.01" placeholder="pl. 1.85"></div>
-        <button onclick="szamolPreMeccs()">Kalkuláció Indítása</button>
+    <div class="form-group">
+        <label for="hazaiKapott">Hazai csapat kapott gólátlaga (hazai pályán):</label>
+        <input type="number" id="hazaiKapott" step="0.1" placeholder="pl. 1.2">
     </div>
 
-    <div id="live-mode" class="section">
-        <div class="input-group"><label>Játékperc:</label><input type="number" id="live_minute" value="65"></div>
-        <div class="input-group"><label>Aktuális állás (Hazai - Vendég):</label>
-            <div style="display:flex; gap:10px;"><input type="number" id="live_gh" value="1"> <input type="number" id="live_ga" value="0"></div>
-        </div>
-        <div class="input-group"><label>Kapura lövések (Hazai / Vendég):</label>
-            <div style="display:flex; gap:10px;"><input type="number" id="live_sh" value="6"> <input type="number" id="live_sa" value="2"></div>
-        </div>
-        <div class="input-group"><label>Labdabirtoklás % (Hazai / Vendég):</label>
-            <div style="display:flex; gap:10px;"><input type="number" id="live_possh" value="58"> <input type="number" id="live_possa" value="42"></div>
-        </div>
-        <div class="input-group"><label>Szögletek (Hazai / Vendég):</label>
-            <div style="display:flex; gap:10px;"><input type="number" id="live_ch" value="7"> <input type="number" id="live_ca" value="2"></div>
-        </div>
-        <button onclick="szamolLiveMeccs()" style="background-color: #e67e22;">Élő kalkuláció</button>
+    <div class="form-group">
+        <label for="vendegLott">Vendég csapat lőtt gólátlaga (idegenben):</label>
+        <input type="number" id="vendegLott" step="0.1" placeholder="pl. 1.5">
     </div>
 
-    <div id="output" style="display:none;" class="results"></div>
+    <div class="form-group">
+        <label for="vendegKapott">Vendég csapat kapott gólátlaga (idegenben):</label>
+        <input type="number" id="vendegKapott" step="0.1" placeholder="pl. 1.6">
+    </div>
+
+    <hr style="border: 0; border-top: 1px solid var(--border); margin: 20px 0;">
+
+    <div class="form-group">
+        <label for="oddsOver">Iroda Over 2.5 Odds (opcionális):</label>
+        <input type="number" id="oddsOver" step="0.01" placeholder="pl. 1.75">
+    </div>
+
+    <div class="form-group">
+        <label for="oddsGG">Iroda GG (Mindkét csapat lő gólt) Odds (opcionális):</label>
+        <input type="number" id="oddsGG" step="0.01" placeholder="pl. 1.80">
+    </div>
+
+    <button onclick="szamol()">Kalkuláció Indítása</button>
+
+    <div id="results" class="results">
+        <h3>Elemzési Eredmények</h3>
+        
+        <div class="result-item">
+            <span>Várható hazai gól (xG):</span>
+            <strong id="resHazaiXG">0.00</strong>
+        </div>
+        <div class="result-item">
+            <span>Várható vendég gól (xG):</span>
+            <strong id="resVendegXG">0.00</strong>
+        </div>
+        <div class="result-item">
+            <span>Összes várható gól:</span>
+            <strong id="resOsszXG">0.00</strong>
+        </div>
+
+        <h4 style="margin-top: 15px; margin-bottom: 10px;">Valószínűségek</h4>
+        
+        <div class="result-item">
+            <span>Hazai 1.5+ gól esély:</span>
+            <strong id="resHazai15">0%</strong>
+        </div>
+        <div class="result-item">
+            <span>Vendég 1.5+ gól esély:</span>
+            <strong id="resVendeg15">0%</strong>
+        </div>
+        <div class="result-item">
+            <span>Mindkét csapat lő gólt (GG):</span>
+            <strong id="resGG">0%</strong>
+        </div>
+        <div class="result-item">
+            <span>Több mint 2.5 gól (Over 2.5):</span>
+            <strong id="resOver25">0%</strong>
+        </div>
+
+        <div id="valueAnalysis"></div>
+    </div>
 </div>
 
-<script src="app.js"></script>
+<script>
+function szamol() {
+    const hazaiLott = parseFloat(document.getElementById('hazaiLott').value) || 0;
+    const hazaiKapott = parseFloat(document.getElementById('hazaiKapott').value) || 0;
+    const vendegLott = parseFloat(document.getElementById('vendegLott').value) || 0;
+    const vendegKapott = parseFloat(document.getElementById('vendegKapott').value) || 0;
+
+    const oddsOver = parseFloat(document.getElementById('oddsOver').value) || 0;
+    const oddsGG = parseFloat(document.getElementById('oddsGG').value) || 0;
+
+    if (hazaiLott === 0 && vendegLott === 0) {
+        alert('Kérlek adj meg érvényes gólátlagokat!');
+        return;
+    }
+
+    // xG Számítás
+    const hazaiXG = (hazaiLott + vendegKapott) / 2;
+    const vendegXG = (vendegLott + hazaiKapott) / 2;
+    const osszXG = hazaiXG + vendegXG;
+
+    // Valószínűségek (Poisson-közelítés)
+    const hazaiGolEsely = 1 - Math.exp(-hazaiXG);
+    const vendegGolEsely = 1 - Math.exp(-vendegXG);
+    
+    // GG Esély
+    const ggEsely = (hazaiGolEsely * vendegGolEsely) * 100;
+
+    // Hazai/Vendég 1.5+ Esély
+    const hazai15Esely = (1 - Math.exp(-hazaiXG) * (1 + hazaiXG)) * 100;
+    const vendeg15Esely = (1 - Math.exp(-vendegXG) * (1 + vendegXG)) * 100;
+
+    // Over 2.5 Esély
+    let over25Esely = (1 - Math.exp(-osszXG) * (1 + osszXG + (Math.pow(osszXG, 2) / 2))) * 100;
+    if (over25Esely < 0) over25Esely = 0;
+    if (over25Esely > 100) over25Esely = 100;
+
+    // Eredmények kiírása
+    document.getElementById('resHazaiXG').innerText = hazaiXG.toFixed(2);
+    document.getElementById('resVendegXG').innerText = vendegXG.toFixed(2);
+    document.getElementById('resOsszXG').innerText = osszXG.toFixed(2);
+
+    document.getElementById('resHazai15').innerText = hazai15Esely.toFixed(1) + '%';
+    document.getElementById('resVendeg15').innerText = vendeg15Esely.toFixed(1) + '%';
+    document.getElementById('resGG').innerText = ggEsely.toFixed(1) + '%';
+    document.getElementById('resOver25').innerText = over25Esely.toFixed(1) + '%';
+
+    // Piaci Értékelemzés
+    let valueHTML = 'h4 style="margin-top: 15px; margin-bottom: 10px;">Piaci Értékelemzés (VALUE)</h4>';
+    let hasValueCheck = false;
+
+    if (oddsOver > 0) {
+        hasValueCheck = true;
+        const realisOverOdds = 100 / over25Esely;
+        const isValue = oddsOver > realisOverOdds;
+        
+        valueHTML += `
+            <div class="value-box ${isValue ? '' : 'no-value'}">
+                <strong>Over 2.5 Érték:</strong><br>
+                Reális odds: <b>${realisOverOdds.toFixed(2)}</b> | Iroda odds: <b>${oddsOver.toFixed(2)}</b><br>
+                <span class="badge ${isValue ? 'badge-success' : 'badge-danger'}">
+                    ${isValue ? '✔ Van érték az oddsban (VALUE)' : '❌ Nincs érték az oddsban'}
+                </span>
+            </div>
+        `;
+    }
+
+    if (oddsGG > 0) {
+        hasValueCheck = true;
+        const realisGGOdds = 100 / ggEsely;
+        const isValue = oddsGG > realisGGOdds;
+        
+        valueHTML += `
+            <div class="value-box ${isValue ? '' : 'no-value'}">
+                <strong>GG (Mindkét csapat lő gólt) Érték:</strong><br>
+                Reális odds: <b>${realisGGOdds.toFixed(2)}</b> | Iroda odds: <b>${oddsGG.toFixed(2)}</b><br>
+                <span class="badge ${isValue ? 'badge-success' : 'badge-danger'}">
+                    ${isValue ? '✔ Van érték az oddsban (VALUE)' : '❌ Nincs érték meglévő oddsra'}
+                </span>
+            </div>
+        `;
+    }
+
+    if (!hasValueCheck) {
+        valueHTML = '';
+    }
+
+    document.getElementById('valueAnalysis').innerHTML = valueHTML;
+    document.getElementById('results').style.display = 'block';
+}
+</script>
+
 </body>
 </html>
